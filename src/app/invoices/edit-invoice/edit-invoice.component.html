@@ -1,0 +1,210 @@
+<form [formGroup]="SalesInvoiceForm" (ngSubmit)="onSubmit()">
+  <!--add item to cart -->
+  <div class="row" style="margin-top: 10px;">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Barcode</label>
+                <input class="form-control"
+                 autofocus
+                 #barcode 
+                 (keyup)="onBarcodeUp()"
+                 [disabled]="editMode">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <label>Price</label>
+                <input class="form-control" 
+                type="number" 
+                readonly="readonly" 
+                #price
+                value="{{productPriceValue}}">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <label> Quantity </label>
+                <input class="form-control"
+                 #quantity  
+                 (keyup)="onQuantityUp()"
+                 [disabled]="editMode">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Total Price</label>
+                <input class="form-control" 
+                type="number" 
+                readonly="readonly" 
+                #itemTotalPrice 
+                value="{{totalPriceValue}}">
+              </div>
+            </div>
+            <div class="col-sm-2">
+             <!-- hidden Field -->
+             <input type="hidden" #pIdValue value="{{productBarcodeValue}}">
+             <input type="hidden" #pName value="{{productNameValue}}">
+              <button class="btn btn-primary" 
+              type="button" 
+              style="margin-top: 32px;cursor: pointer" 
+              (click)="onAddItem()"
+              [disabled]="editMode">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+  <!-- cartItems -->
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-2">
+              <label>Id</label>
+            </div>
+            <div class="col-sm-3">
+              <label>Name</label>
+            </div>
+            <div class="col-sm-2">
+              <label>Price</label>
+            </div>
+            <div class="col-sm-2">
+              <label>Quantity</label>
+            </div>
+            <div class="col-sm-3">
+              <label>Total Price</label>
+            </div>
+          </div>
+          <div class="row" formArrayName="invoiceCartItems">
+            <div class="row" *ngFor="let invoiceControl of SalesInvoiceForm.get('invoiceCartItems').controls; let i=index"
+             formGroupName="{{i}}"
+              style="margin-top: 10px">
+              <div class="col-sm-2">
+                <input class="form-control" formControlName="productId" readonly="readonly">
+              </div>
+              <div class="col-sm-3">
+                <input class="form-control" formControlName="productName" readonly="readonly">
+              </div>
+              <div class="col-sm-2">
+                <input class="form-control"  
+                formControlName="price" 
+                readonly="readonly">
+              </div>
+              <div class="col-sm-2">
+                <input class="form-control" 
+                type="number"
+                formControlName="quantity" 
+                (change)="onCartQuantityUp($event.target.value,i)"
+                (keyup)="onCartQuantityUp($event.target.value,i)"
+                >
+              </div>
+              <div class="col-sm-2">
+                <input class="form-control"  formControlName="totalPrice" readonly="readonly">
+              </div>
+              <div class="col-sm-1" *ngIf="!editMode">
+                  <button class="btn btn-danger" (click)="onDeleteCartItem(i)" >X</button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- calculation and save -->
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Items in cart</label>
+                <input class="form-control"
+                 type="number"
+                 value="{{cartItems}}" 
+                 #itemIncartValue
+                 readonly="readonly"
+                 formControlName="itemsInCart" >
+              </div>
+              <div class="form-group">
+                <label>Sub total</label>
+                <input class="form-control" 
+                type="number" 
+                readonly="readonly"
+                #subTotalValue
+                value="{{subTotal}}"
+                formControlName="subTotal" >
+              </div>
+              <div class="form-group">
+                <label>Discount (%)</label>
+                <input class="form-control" 
+                type="number"
+                #discountPercent
+                value="{{discountPercentage}}"
+                (keyup)="onDiscountUp()" 
+                formControlName="discount">
+              </div>
+              <div class="form-group">
+                  <label>Discount (TK)</label>
+                  <input class="form-control" 
+                  type="number" 
+                  #discountAmountValue
+                  value="{{discountAmount}}"
+                  (keyup)="onDiscountAmountUp()"
+                  formControlName="discountAmount">
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                  <div class="form-group">
+                      <label>Total</label>
+                      <input class="form-control" 
+                      type="number" 
+                      readonly="readonly"
+                      #finalPriceValue
+                      value="{{finalPrice}}"
+                      formControlName="total">
+                    </div>
+
+              <div class="form-group">
+                <label>Cash</label>
+                <input class="form-control"
+                style="background-color: green;color:white;" 
+                type="number" 
+                placeholder="cash" 
+                #cashValue
+                value="{{cash}}"
+                (keyup)="onCashUp()"
+                formControlName="cash">
+              </div>
+              <div class="form-group">
+                <label>Due</label>
+                <input class="form-control" 
+                style="background-color: red;color:white;"
+                readonly="readonly"
+                placeholder="due" 
+                value="{{dueAmount}}"
+                formControlName="due">
+                <!-- hidden field -->
+                <input class="form-control" 
+                type="hidden"
+                formControlName="createdOn">
+              </div>
+              <div class="form-group">
+                <button class="btn btn-success"
+                 type="submit" 
+                 style="cursor: pointer"
+                 [disabled]="!SalesInvoiceForm.valid">Save&Print</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

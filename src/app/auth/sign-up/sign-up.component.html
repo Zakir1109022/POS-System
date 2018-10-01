@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+    <div class="card" style="margin-top:50px;">
+      <div class="card-body">
+        <h3 style="text-align: center">Please Signup</h3>
+        <hr>
+        <form [formGroup]="registerForm">
+          <div class="form-group">
+            <label>Email address</label>
+            <input type="email" formControlName="email" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" formControlName="password" required>
+          </div>
+          <button type="submit" (click)="tryRegister(registerForm.value)" style="cursor: pointer;" class="btn  btn-success">Register</button>
+        </form>
+        <br>
+        <button class=" btn btn-primary" style="cursor: pointer;" type="button" (click)="onFacebookSignUp()">Signup with Facebook</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+  </div>
+</div>

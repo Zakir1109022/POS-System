@@ -1,0 +1,93 @@
+
+<div class="row" style="margin-top: 50px;padding-bottom:5px;">
+  <div class="col-sm-3">
+    <br>
+    <button type="button" 
+    class="btn btn-outline-primary" 
+    style="cursor: pointer;margin-bottom:10px;" 
+    routerLink="/products/new">Add product</button>
+  </div>
+
+  <div class="col-sm-3">
+      <label>Per Page</label>
+            <select 
+            class="form-control" 
+            name="perPageRows" 
+            (change)="onSelectPageRows($event.target.value)"
+           >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+    </div>
+
+  <div class="col-sm-3">
+    <label>Sort by</label>
+          <select 
+          class="form-control" 
+          name="sortedValue" 
+          #sortBy>
+            <option>product_id</option>
+            <option>product_name</option>
+          </select>
+  </div>
+
+  <div class="col-sm-3">
+      <label>Search</label>
+    <input type="search" #myInput 
+     (keyup)="filterItem(myInput.value)"
+      placeholder="search..." 
+      class="form-control"/>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <table class="table table-bordered">
+      <thead class="thead-dark">
+          <tr>
+              <th>Product Id</th>
+              <th>Barcode</th>
+              <th>Product Name</th>
+              <th>Purchase Price</th>
+              <th>Salse Price</th>
+              <th>Initial Stock</th>
+              <th>Remaining Stock</th>
+              <th>Vat</th>
+              <th>Expire Date</th>
+              <th>Action</th>
+            </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let product of productList | paginate:{itemsPerPage:RowsPerPage,currentPage:p} ">
+              <td>{{product.product_id}}</td>
+              <td>{{product.barcode}}</td>
+              <td>{{product.product_name}}</td>
+              <td>{{product.purchase_price}}</td>
+              <td>{{product.price}}</td>
+              <td>{{product.initial_stock}}</td>
+              <td *ngIf="product.remaining_stock == 0;else greenTd"
+              style="background-color: red;color:white;">{{product.remaining_stock}}
+              </td>
+               <ng-template #greenTd>
+                <td>{{product.remaining_stock}}</td>
+                </ng-template>
+              <td>{{product.vat}}</td>
+              <td>{{product.expire_date}}</td>
+              <td>
+                <a class="btn" style="cursor: pointer;" (click)="onEdit(product)">
+                  <i class="fas fa-pencil-alt"></i>
+                </a>
+                <a class="btn" style="cursor: pointer;" (click)="onDelete(product.$key)">
+                    <i class="far fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+      </tbody>
+          
+        </table>
+        <pagination-controls (pageChange)="p=$event"></pagination-controls>
+        </div>
+        </div>
+
+      

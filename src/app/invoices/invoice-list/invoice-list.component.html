@@ -1,0 +1,76 @@
+
+<div class="row" style="margin-top: 50px;padding-bottom:5px;">
+    <div class="col-sm-4">
+      <br>
+      <button type="button" 
+      class="btn btn-outline-primary" 
+      style="cursor: pointer;margin-bottom:10px;" 
+      routerLink="/invoices/new">Add invoice</button>
+    </div>
+
+    <div class="col-sm-4">
+      <label>Per Page</label>
+            <select 
+            class="form-control" 
+            name="perPageRows" 
+            (change)="onSelectPageRows($event.target.value)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+       </div>
+
+        <div class="col-sm-4">
+            <label>Search</label>
+          <input type="search" #myInput 
+          (keyup)="filterItem(myInput.value)"
+            placeholder="search..." 
+            class="form-control"/>
+        </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Invoice Id</th>
+                <th>Created On</th>
+                <th>Cart Items</th>
+                <th>Amount</th>
+                <th>Cash Paid</th>
+                <th>Due</th>
+                <th>Action</th>
+              </tr>
+         </thead>
+         <tbody>
+            <tr *ngFor="let invoice of salesInvoiceList | paginate:{itemsPerPage:RowsPerPage,currentPage:p} ">
+                <td>{{invoice.$key}}</td>
+                <td>{{invoice.createdOn}}</td>
+                <td>
+                  <ol>
+                    <li *ngFor="let cartItem of invoice.invoiceCartItems | keys">
+                      {{cartItem.productName}}
+                    </li>
+                  </ol>
+                </td>
+                <td>{{invoice.total}}</td>
+                <td>{{invoice.cash}}</td>
+                <td>{{invoice.due}}</td>
+                <td>
+                  <a class="btn" style="cursor: pointer;" (click)="onEdit(invoice)">
+                      <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <a class="btn" style="cursor: pointer;" (click)="onDelete(invoice.$key)">
+                      <i class="fas fa-trash-alt"></i>
+                  </a>
+                </td>
+              </tr>
+  
+         </tbody>
+          </table>
+
+          <pagination-controls (pageChange)="p=$event"></pagination-controls>
+
+          </div>
+          </div>
